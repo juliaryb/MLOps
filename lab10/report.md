@@ -2,8 +2,8 @@
 
 ## Prerequisits
 - aws CLI working:
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](images/image.png)
+![alt text](images/image-1.png)
 
 - GitHub Personal Access Token (PAT) for Terraform (never publish it! - add to .gitignore if written to file)
 
@@ -13,15 +13,15 @@
 
 - Export GitHub token as an environment variable: `export TF_VAR_github_token=github_token_here`
 
-![](image-2.png)
-![alt text](image-3.png)
-![alt text](image-4.png)
+![](images/image-2.png)
+![alt text](images/image-3.png)
+![alt text](images/image-4.png)
 
 after `terraform apply`:
-![alt text](image-5.png)
+![alt text](images/image-5.png)
 
 - repo successfully created:
-![alt text](image-6.png)
+![alt text](images/image-6.png)
 
 - then deleted with `terraform destroy`
 
@@ -33,14 +33,14 @@ Refactored files in `/GitHub-repo-refactor`.
 - created an S3 `julia-terraform-state-mlops`
 - added `providers.tf` and `main.tf` to /remote-state
 - results of `terraform apply` (remote state backend successfully configured)
-![alt text](image-7.png) 
+![alt text](images/image-7.png) 
 - added `.terraform.lock.hcl` to each terraform folder in the repo
 
 ## Aliases 
 Allows for multiple configurations of the same provider and selection of the provider configuration per resource. With aliasing Terraform becomes multi-region and scalable.
 - added `providers.tf` and `main.tf` to /aliases
 - results of `terraform apply` (buckets created successfuly)
-![alt text](image-8.png)
+![alt text](images/image-8.png)
 
 Internally, Terraform now sees:
  - aws - AWS client configured for us-east-1
@@ -49,10 +49,10 @@ Internally, Terraform now sees:
 ### Exercise 2 - S3 buckets deployment across multiple AWS regions
 - added `variables.tf`, `main.tf`, `s3.tf` and `outputs.tf` to /multiple-regions-S3-buckets
 - results of `terraform apply` (buckets created successfuly)
-![alt text](image-9.png)
+![alt text](images/image-9.png)
 
 ### Exercise 3 - Modules - S3 setup refactor
 - duplicated the project from previous exercise as /s3-refactor and added /modules where `variables.tf`, `main.tf` and `outputs.tf` were added
 - the `main.tf` in the root of the s3-refactor project uses the module to create the buckets and avoids duplicated code
 - results of `terraform apply` (buckets created successfuly)
-![alt text](image-10.png)
+![alt text](images/image-10.png)
