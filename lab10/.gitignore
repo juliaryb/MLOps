@@ -2,5 +2,5 @@ pat.txt
 
 # exclude terraform files
 */.terraform
-*/.terraform.lock.hcl
+# */.terraform.lock.hcl - shuold be committed for reproducability 
 */terraform.tfstate*
