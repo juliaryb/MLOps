@@ -45,3 +45,14 @@ Allows for multiple configurations of the same provider and selection of the pro
 Internally, Terraform now sees:
  - aws - AWS client configured for us-east-1
  - aws.us_west_2 - AWS client configured for us-west-2
+
+### Exercise 2 - S3 buckets deployment across multiple AWS regions
+- added `variables.tf`, `main.tf`, `s3.tf` and `outputs.tf` to /multiple-regions-S3-buckets
+- results of `terraform apply` (buckets created successfuly)
+![alt text](image-9.png)
+
+### Exercise 3 - Modules - S3 setup refactor
+- duplicated the project from previous exercise as /s3-refactor and added /modules where `variables.tf`, `main.tf` and `outputs.tf` were added
+- the `main.tf` in the root of the s3-refactor project uses the module to create the buckets and avoids duplicated code
+- results of `terraform apply` (buckets created successfuly)
+![alt text](image-10.png)
