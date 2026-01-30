@@ -1,0 +1,6 @@
+pat.txt
+
+# exclude terraform files
+*/.terraform
+*/.terraform.lock.hcl
+*/terraform.tfstate*
