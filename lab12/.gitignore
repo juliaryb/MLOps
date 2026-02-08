@@ -3,3 +3,8 @@
 __pycache__
 airflow
 data.csv
+config
+.uv-cache
+uv-cache
+logs
+plugins

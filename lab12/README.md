@@ -20,4 +20,17 @@ So the parameter `max_active_runs=1` was set, and then it worked:
 But then realised there were duplicates and the end date should be calculated with timedelta(days=6) not 7. Then the resulting csv is correct.
 
 ## Exercise 3
+It didn't want to work, but there was a bug in the compose.yaml file? 
+line 39: `- uv-cache:/opt/airflow/.uv-cache` changed to `- ./uv-cache:/opt/airflow/.uv-cache`
+
+and also:
+```
+mkdir -p dags logs plugins config .uv_cache
+sudo chmod -R 777 logs dags plugins config .uv_cache
+```
+should be .uv-cache
+
+Eventually, it worked:
+![alt text](image-5.png)
+
 

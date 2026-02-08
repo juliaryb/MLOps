@@ -1,26 +1,21 @@
-import datetime
 import json
-import os
-
+import os 
 import pendulum
-
-from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.standard.operators.python import PythonOperator, PythonVirtualenvOperator
 from dotenv import load_dotenv
-from twelvedata import TDClient
 
 from airflow import DAG
 
 load_dotenv()
 
 
-def get_data(**kwargs) -> dict:
-    logical_date: pendulum.DateTime = kwargs["logical_date"]
+def get_data_venv(logical_date: str) -> dict:
+    from twelvedata import TDClient
 
     td = TDClient(apikey=os.environ["TWELVEDATA_API_KEY"])
-
     ts = td.exchange_rate(symbol="USD/EUR", date=logical_date.isoformat())
-    data = ts.as_json()
-    return data
+
+    return ts.as_json()
 
 
 def save_data(data: dict) -> None:
@@ -35,12 +30,20 @@ def save_data(data: dict) -> None:
 
 
 with DAG(
-        dag_id="scheduling_dataset_gathering",
-        schedule="@daily",
-        catchup=True,
-        start_date=pendulum.datetime(2026, 1, 1, tz="UTC"),
+    dag_id="scheduling_dataset_gathering_with_venvs",
+    schedule="@daily",
+    catchup=True,
+    start_date=pendulum.datetime(2026, 2, 5, tz="UTC"),
+    tags=["exercise_3"],
 ) as dag:
-    get_data_op = PythonOperator(task_id="get_data", python_callable=get_data)
+
+    get_data_op = PythonVirtualenvOperator(
+        task_id="get_data",
+        python_callable=get_data_venv,
+        requirements=["twelvedata", "pendulum", "lazy_object_proxy", "cloudpickle"],
+        serializer="cloudpickle",
+    )
+
     save_data_op = PythonOperator(
         task_id="save_data",
         python_callable=save_data,
