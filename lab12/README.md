@@ -72,9 +72,7 @@ Results in S3:
 - added postgres-storage to services in yaml and added postgres-storage-volume to volumes
 - created a script to created the db on startup in postgres-init and verified if it worked:
     ![alt text](images/image-11.png)
-- create airflow connection to the storage db using airflow UI:
-    ![alt text](images/image-12.png)
-    but it failed, so I added this line to the compose file to establish the connection to the database: 
+- added this line to the compose file to establish the connection to the database: 
     ```
     AIRFLOW_CONN_POSTGRES_STORAGE: "postgresql://storage:storage@postgres-storage:5432/storage"
     ```
