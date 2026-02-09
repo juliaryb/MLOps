@@ -21,6 +21,7 @@ dev = [
 ]
 
 airflow_common = [
-    "apache-airflow[celery,postgres,standard,uv]==3.1.5",
+    "apache-airflow[celery,postgres,standard,uv,s3fs]==3.1.5",
     "requests",
+    "apache-airflow-providers-amazon"
 ]

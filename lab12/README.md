@@ -34,3 +34,33 @@ Eventually, it worked:
 ![alt text](image-5.png)
 
 
+## Object storage XCom backend
+LocalStack S3 functioning:
+![alt text](image-6.png)
+
+After adding dependencies the docker image needs to be rebuilt:
+```
+docker compose down -v
+docker compose build --no-cache
+docker compose up
+```
+
+Also then it couldn't write to the bucket due to "missing" credentials, this line helped:
+```
+AIRFLOW_CONN_AWS_DEFAULT: '{"conn_type": "aws", "login": "test", "password": "test", "extra": {"endpoint_url": "http://localstack:4566", "region_name": "us-east-1"}}'
+```
+
+Then it worked:
+![alt text](image-7.png)
+
+
+## Exercise 4
+Create the weather bucket:
+![alt text](image-8.png)
+
+Dag working:
+![alt text](image-9.png)
+
+Results in S3:
+![alt text](image-10.png)
+

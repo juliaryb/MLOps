@@ -26,6 +26,15 @@ x-airflow-common: &airflow-common
     AIRFLOW__API__SECRET_KEY: "sv3N1i8Wwu9W6IsUvcDjCg=="
     AIRFLOW__API_AUTH__JWT_SECRET: "sv3N1i8Wwu9W6IsUvcDjCg=="
 
+    # set up LocalStack S3 as XCom backend
+    AIRFLOW__CORE__XCOM_BACKEND: "airflow.providers.common.io.xcom.backend.XComObjectStorageBackend"
+    AIRFLOW__COMMON_IO__XCOM_OBJECTSTORAGE_PATH: "s3://aws_default@airflow-xcom/xcom"
+    AIRFLOW__COMMON_IO__XCOM_OBJECTSTORAGE_THRESHOLD: "0"  # threshold 0 = all files are stored in S3
+
+    # URL-encoded fake AWS connection, we must set endpoint_url for LocalStack
+    # AIRFLOW_CONN_AWS_DEFAULT: 'aws://test:test@?endpoint_url=http%3A%2F%2Flocalstack%3A4566&region_name=us-east-1'
+    AIRFLOW_CONN_AWS_DEFAULT: '{"conn_type": "aws", "login": "test", "password": "test", "extra": {"endpoint_url": "http://localstack:4566", "region_name": "us-east-1"}}'
+
     # use uv + cache
     AIRFLOW__STANDARD__VENV_INSTALL_METHOD: "uv"
     UV_CACHE_DIR: /opt/airflow/.uv-cache
@@ -43,6 +52,8 @@ x-airflow-common: &airflow-common
     postgres:
       condition: service_healthy
     valkey:
+      condition: service_healthy
+    localstack:
       condition: service_healthy
 
 services:
@@ -125,6 +136,25 @@ services:
         condition: service_completed_successfully
     restart: always
 
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      SERVICES: "s3"  # just S3 service
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack-init:/etc/localstack/init
+    healthcheck:
+      test: [ "CMD", "curl", "-fsS", "http://localhost:4566/_localstack/health" ]
+      interval: 10s
+      retries: 10
+    restart: always
+
 volumes:
   postgres-db-volume:
   uv-cache:
+  localstack_data:
+  
