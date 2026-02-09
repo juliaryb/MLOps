@@ -1610,6 +1610,7 @@ dependencies = [
 airflow-common = [
     { name = "apache-airflow", extra = ["celery", "postgres", "s3fs", "standard", "uv"] },
     { name = "apache-airflow-providers-amazon" },
+    { name = "apache-airflow-providers-postgres" },
     { name = "requests" },
 ]
 dev = [
@@ -1630,6 +1631,7 @@ requires-dist = [
 airflow-common = [
     { name = "apache-airflow", extras = ["celery", "postgres", "standard", "uv", "s3fs"], specifier = "==3.1.5" },
     { name = "apache-airflow-providers-amazon" },
+    { name = "apache-airflow-providers-postgres" },
     { name = "requests" },
 ]
 dev = [{ name = "ruff" }]

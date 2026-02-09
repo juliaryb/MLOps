@@ -31,9 +31,12 @@ x-airflow-common: &airflow-common
     AIRFLOW__COMMON_IO__XCOM_OBJECTSTORAGE_PATH: "s3://aws_default@airflow-xcom/xcom"
     AIRFLOW__COMMON_IO__XCOM_OBJECTSTORAGE_THRESHOLD: "0"  # threshold 0 = all files are stored in S3
 
+    AIRFLOW__SECRETS__BACKEND: "airflow.secrets.environment_variables.EnvironmentVariablesBackend"
+
     # URL-encoded fake AWS connection, we must set endpoint_url for LocalStack
     # AIRFLOW_CONN_AWS_DEFAULT: 'aws://test:test@?endpoint_url=http%3A%2F%2Flocalstack%3A4566&region_name=us-east-1'
     AIRFLOW_CONN_AWS_DEFAULT: '{"conn_type": "aws", "login": "test", "password": "test", "extra": {"endpoint_url": "http://localstack:4566", "region_name": "us-east-1"}}'
+    AIRFLOW_CONN_POSTGRES_STORAGE: "postgresql://storage_user:storage_pass@postgres-storage:5432/storage_db"
 
     # use uv + cache
     AIRFLOW__STANDARD__VENV_INSTALL_METHOD: "uv"
@@ -55,6 +58,8 @@ x-airflow-common: &airflow-common
       condition: service_healthy
     localstack:
       condition: service_healthy
+    postgres-storage:
+      condition: service_healthy
 
 services:
   postgres:
@@ -67,6 +72,23 @@ services:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 10s
+      retries: 5
+    restart: always
+
+  postgres-storage:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: storage_user
+      POSTGRES_PASSWORD: storage_pass
+      POSTGRES_DB: storage_db
+    volumes:
+      - postgres-storage-volume:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "storage_user", "-d", "storage_db" ]
       interval: 10s
       retries: 5
     restart: always
@@ -157,4 +179,5 @@ volumes:
   postgres-db-volume:
   uv-cache:
   localstack_data:
+  postgres-storage-volume:
   
